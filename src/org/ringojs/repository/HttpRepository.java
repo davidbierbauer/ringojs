@@ -28,9 +28,15 @@ public class HttpRepository extends AbstractRepository
         this.resource = new HttpResource(url);
         this.lastModified = resource.lastModified;
         this.exists = resource.exists;
-        this.path=url.getPath();
-        this.name=url.getFile();
-        System.out.println("path="+path);
+        this.path = "";
+        this.name="";
+    }
+
+    public HttpRepository(URL url, String name, HttpRepository parent)
+    {
+        this(url);
+        this.parent = parent;
+        this.name = name;
     }
 
     private URL createCleanURL(String name) throws MalformedURLException
@@ -53,13 +59,14 @@ public class HttpRepository extends AbstractRepository
     @Override
     protected Resource lookupResource(String name) throws IOException
     {
-        return new HttpResource(this.createCleanURL(name));
+        return new HttpResource(createCleanURL(name), name, this);
     }
 
     @Override
     protected AbstractRepository createChildRepository(String name) throws IOException
     {
-        return new HttpRepository(this.createCleanURL(name));
+        System.err.println("NAME: " + name);
+        return new HttpRepository(createCleanURL(name), name, this);
     }
 
     @Override

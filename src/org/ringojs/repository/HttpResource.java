@@ -30,6 +30,15 @@ public class HttpResource extends AbstractResource
         this.getMeta();
         this.path=url.getPath();
         this.name=url.getFile();
+        setBaseNameFromName(name);
+    }
+
+    public HttpResource(URL url, String name, HttpRepository parent) {
+        this(url);
+        repository = parent;
+        this.name = name;
+        this.path = name;
+        setBaseNameFromName(name);
     }
 
     public long getLength()
@@ -79,5 +88,16 @@ public class HttpResource extends AbstractResource
         {
             Logger.getLogger(HttpResource.class.getName()).log(Level.WARNING, null, ex);
         }
+    }
+
+
+    @Override
+    public int hashCode() {
+        return 17 + url.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof HttpResource && url.equals(((HttpResource)obj).url);
     }
 }
